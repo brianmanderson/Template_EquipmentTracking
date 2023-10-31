@@ -15,8 +15,6 @@ namespace UseKit
 
         public int total_uses;
         public int warning_uses;
-        public string KitDirectoryPath;
-        public string ReorderDirectoryPath;
 
         public UseKit()
         {

@@ -9,11 +9,15 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using UseKit;
+using DocumentFormat.OpenXml.Office.CustomDocumentInformationPanel;
+using DocumentFormat.OpenXml.Wordprocessing;
+using System.Security.Cryptography;
+using System.Xml.Linq;
+using DocumentFormat.OpenXml.Drawing.Diagrams;
 
 namespace SterillizationTracking.Kit_Classes
 {
-    public class BaseOnePartKit : UseKit.UseKit, INotifyPropertyChanged
+    public class BaseOnePartKit : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -26,28 +30,10 @@ namespace SterillizationTracking.Kit_Classes
             }
         }
         private int currentUse;
-        private List<string> usageDates = new List<string>();
         private string currentUse_string, usesLeft_string, description;
         private System.Windows.Media.Brush statusColor;
-        private string name;
-        private string kitnumber;
-        private string useFileLocation;
-        private string _present;
-        private bool can_reorder, canAdd;
-        private int usesLeft;
 
-        public List<string> UsageDates
-        {
-            get
-            {
-                return usageDates;
-            }
-            set
-            {
-                usageDates = value;
-                OnPropertyChanged("UsageDates");
-            }
-        }
+        private int usesLeft;
 
         public string CurrentUseString
         {
@@ -65,24 +51,6 @@ namespace SterillizationTracking.Kit_Classes
             {
                 usesLeft_string = value;
                 OnPropertyChanged("UsesLeftString");
-            }
-        }
-        public string Description
-        {
-            get { return description; }
-            set
-            {
-                description = value;
-                OnPropertyChanged("Description");
-            }
-        }
-        public string Present
-        {
-            get { return _present; }
-            set
-            {
-                _present = value;
-                OnPropertyChanged("Present");
             }
         }
         public bool CanAdd
@@ -113,7 +81,9 @@ namespace SterillizationTracking.Kit_Classes
                 OnPropertyChanged("UsesLeft");
             }
         }
-
+        public int Total_Uses;
+        public int Warning_Uses;
+        private bool can_reorder;
         public bool CanReorder
         {
             get { return can_reorder; }
@@ -123,37 +93,7 @@ namespace SterillizationTracking.Kit_Classes
                 OnPropertyChanged("CanReorder");
             }
         }
-
-        public string UseFileLocation
-        {
-            get { return useFileLocation; }
-            set
-            {
-                useFileLocation = value;
-                OnPropertyChanged("UseFileLocation");
-            }
-        }
-
-        public string KitNumber
-        {
-            get { return kitnumber; }
-            set
-            {
-                kitnumber = value;
-                OnPropertyChanged("KitNumber");
-            }
-        }
-
-        public String Name
-        {
-            get { return name; }
-            set
-            {
-                name = value;
-                OnPropertyChanged("Name");
-            }
-        }
-
+        public string Description_;
         public System.Windows.Media.Brush StatusColor
         {
             get { return statusColor; }
@@ -163,127 +103,21 @@ namespace SterillizationTracking.Kit_Classes
                 OnPropertyChanged("StatusColor");
             }
         }
-        public BaseOnePartKit(string name, string kitnumber, string file_path) //string name, int allowed_steralizaitons, int warning_use
+        public BaseOnePartKit(int current_use, int total_uses, int warning_uses, string description) //string name, int allowed_steralizaitons, int warning_use
         {
-            Name = name;
             StatusColor = statusColor;
-            KitNumber = $"Kit #: {kitnumber}";
-            KitDirectoryPath = Path.Combine(file_path, name, $"Kit {kitnumber}");
-            UseFileLocation = Path.Combine(KitDirectoryPath, "Uses.txt");
-
-            warning_uses = 80;
-            total_uses = 100;
-            CanReorder = false;
-            Description = "";
-            if (name == "Cylinder")
-            {
-                total_uses = 500;
-                warning_uses = 450;
-                Description = "18 Pieces";
-            }
-            else if (name == "Tandem and Ovoid")
-            {
-                Description = "18 Pieces";
-                total_uses = 100;
-                warning_uses = 80;
-            }
-            else if (name == "Needle Kit")
-            {
-                total_uses = 25;
-                warning_uses = 18;
-                Description = "Count: 10, 20 Pieces";
-            }
-            else if (name == "Segmented Cylinder")
-            {
-                total_uses = 500;
-                warning_uses = 450;
-            }
-            else if (name == "Cervix Applicator Set")
-            {
-                Description = "10 Pieces";
-                total_uses = 500;
-                warning_uses = 450;
-            }
-            CanAdd = true;
-            UsageDates = new List<string>();
-            build_read_use_file();
+            CurrentUse = current_use;
+            Warning_Uses = warning_uses;
+            Total_Uses = total_uses;
+            Description_ = description;
         }
 
-        public void build_read_use_file()
+        public void add_use()
         {
-            if (File.Exists(UseFileLocation))
-            {
-                List<string> lines = File.ReadAllLines(UseFileLocation).ToList();
-                Description = lines[0].Split("Description:")[1];
-                CurrentUse = Convert.ToInt32(lines[1].Split("Use:")[1]);
-                total_uses = Convert.ToInt32(lines[2].Split("Uses:")[1]);
-                warning_uses = Convert.ToInt32(lines[3].Split("Uses:")[1]);
-                Present = lines[4].Split("updated:")[1];
-                if (lines.Count > 5)
-                {
-                    UsageDates = lines.GetRange(5, lines.Count - 5);
-                }
-                else
-                {
-                    UsageDates = new List<string>();
-                }
-
-            }
-            else
-            {
-                CurrentUse = 0;
-                string[] info ={ $"Description:{Description}", $"Current Use:{0}", $"Total Uses:{total_uses}", $"Warning Uses:{warning_uses}", $"Last updated:{Present}" };
-                if (!Directory.Exists(KitDirectoryPath))
-                {
-                    Directory.CreateDirectory(KitDirectoryPath);
-                }
-                File.WriteAllLines(UseFileLocation, info);
-            }
-            check_status();
-            CurrentUseString = $"Current use: {CurrentUse}";
-            UsesLeft = total_uses - CurrentUse;
-            UsesLeftString = $"Uses left: {UsesLeft}";
-            CanAdd = true;
-            if (total_uses - CurrentUse == 0)
-            {
-                CanAdd = false;
-            }
-        }
-
-        public void create_reorder_file()
-        {
-            ReorderDirectoryPath = Path.Combine(KitDirectoryPath, "Reorders");
-            if (!Directory.Exists(ReorderDirectoryPath))
-            {
-                Directory.CreateDirectory(ReorderDirectoryPath);
-            }
-            DateTime moment = DateTime.Now;
-            Present = (moment.ToLongDateString() + " " + moment.ToLongTimeString()).Replace(":", ".");
-            string file_path = Path.Combine(ReorderDirectoryPath, Present.Replace(":", ".") + ".txt");
-            File.WriteAllLines(file_path, UsageDates);
-        }
-        public void update_file()
-        {
-            List<string> info = new List<string>() { $"Description:{Description}", $"Current Use:{CurrentUse}",
-                $"Total Uses:{total_uses}", $"Warning Uses:{warning_uses}", $"Last updated:{Present}" };
-            info.AddRange(UsageDates);
-            if (!Directory.Exists(KitDirectoryPath))
-            {
-                Directory.CreateDirectory(KitDirectoryPath);
-            }
-            File.WriteAllLines(UseFileLocation, info);
-        }
-
-        public void add_use(object sender, RoutedEventArgs e)
-        {
-            DateTime moment = DateTime.Now;
-            Present = moment.ToLongDateString() + " " + moment.ToLongTimeString();
             CurrentUse += 1;
             CurrentUseString = $"Current use: {CurrentUse}";
-            UsesLeft = total_uses - CurrentUse;
+            UsesLeft = Total_Uses - CurrentUse;
             UsesLeftString = $"Uses left: {UsesLeft}";
-            UsageDates.Add($"{CurrentUse}: {Present}");
-            update_file();
             check_status();
         }
 
@@ -302,26 +136,14 @@ namespace SterillizationTracking.Kit_Classes
         {
             update_file();
         }
-        public void reorder(object sender, RoutedEventArgs e)
-        {
-            create_reorder_file();
-            CurrentUse = 0;
-            CurrentUseString = $"Current use: {CurrentUse}";
-            UsesLeft = total_uses - CurrentUse;
-            UsesLeftString = $"Uses left: {UsesLeft}";
-            UsageDates = new List<string>();
-            update_file();
-            check_status();
-        }
-
         public void check_status()
         {
-            if (CurrentUse >= total_uses)
+            if (CurrentUse >= Total_Uses)
             {
                 StatusColor = System.Windows.Media.Brushes.Red;
                 CanReorder = true;
             }
-            else if (CurrentUse >= warning_uses * 0.75)
+            else if (CurrentUse >= Warning_Uses * 0.75)
             {
                 StatusColor = System.Windows.Media.Brushes.Yellow;
                 CanReorder = false;
