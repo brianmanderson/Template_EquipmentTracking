@@ -10,4 +10,8 @@
     <PackageReference Include="DocumentFormat.OpenXml" Version="2.13.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\UseKit\UseKit.csproj" />
+  </ItemGroup>
+
 </Project>

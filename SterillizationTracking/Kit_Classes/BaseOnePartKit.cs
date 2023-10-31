@@ -9,11 +9,22 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using UseKit;
 
 namespace SterillizationTracking.Kit_Classes
 {
-    public class BaseOnePartKit : INotifyPropertyChanged
+    public class BaseOnePartKit : UseKit.UseKit, INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void OnPropertyChanged(string info)
+        {
+            PropertyChangedEventHandler handler = PropertyChanged;
+            if (handler != null)
+            {
+                handler(this, new PropertyChangedEventArgs(info));
+            }
+        }
         private int currentUse;
         private List<string> usageDates = new List<string>();
         private string currentUse_string, usesLeft_string, description;
@@ -24,11 +35,6 @@ namespace SterillizationTracking.Kit_Classes
         private string _present;
         private bool can_reorder, canAdd;
         private int usesLeft;
-
-        public int total_uses;
-        public int warning_uses;
-        public string KitDirectoryPath;
-        public string ReorderDirectoryPath;
 
         public List<string> UsageDates
         {
@@ -42,6 +48,7 @@ namespace SterillizationTracking.Kit_Classes
                 OnPropertyChanged("UsageDates");
             }
         }
+
         public string CurrentUseString
         {
             get { return currentUse_string; }
@@ -85,6 +92,75 @@ namespace SterillizationTracking.Kit_Classes
             {
                 canAdd = value;
                 OnPropertyChanged("CanAdd");
+            }
+        }
+        public int CurrentUse
+        {
+            get { return currentUse; }
+            set
+            {
+                currentUse = value;
+                OnPropertyChanged("CurrentUse");
+            }
+        }
+
+        public int UsesLeft
+        {
+            get { return usesLeft; }
+            set
+            {
+                usesLeft = value;
+                OnPropertyChanged("UsesLeft");
+            }
+        }
+
+        public bool CanReorder
+        {
+            get { return can_reorder; }
+            set
+            {
+                can_reorder = value;
+                OnPropertyChanged("CanReorder");
+            }
+        }
+
+        public string UseFileLocation
+        {
+            get { return useFileLocation; }
+            set
+            {
+                useFileLocation = value;
+                OnPropertyChanged("UseFileLocation");
+            }
+        }
+
+        public string KitNumber
+        {
+            get { return kitnumber; }
+            set
+            {
+                kitnumber = value;
+                OnPropertyChanged("KitNumber");
+            }
+        }
+
+        public String Name
+        {
+            get { return name; }
+            set
+            {
+                name = value;
+                OnPropertyChanged("Name");
+            }
+        }
+
+        public System.Windows.Media.Brush StatusColor
+        {
+            get { return statusColor; }
+            set
+            {
+                statusColor = value;
+                OnPropertyChanged("StatusColor");
             }
         }
         public BaseOnePartKit(string name, string kitnumber, string file_path) //string name, int allowed_steralizaitons, int warning_use
@@ -196,87 +272,6 @@ namespace SterillizationTracking.Kit_Classes
                 Directory.CreateDirectory(KitDirectoryPath);
             }
             File.WriteAllLines(UseFileLocation, info);
-        }
-
-        public int CurrentUse
-        {
-            get { return currentUse; }
-            set
-            {
-                currentUse = value;
-                OnPropertyChanged("CurrentUse");
-            }
-        }
-
-        public int UsesLeft
-        {
-            get { return usesLeft; }
-            set
-            {
-                usesLeft = value;
-                OnPropertyChanged("UsesLeft");
-            }
-        }
-
-        public bool CanReorder
-        {
-            get { return can_reorder; }
-            set
-            {
-                can_reorder = value;
-                OnPropertyChanged("CanReorder");
-            }
-        }
-
-        public string UseFileLocation
-        {
-            get { return useFileLocation; }
-            set
-            {
-                useFileLocation = value;
-                OnPropertyChanged("UseFileLocation");
-            }
-        }
-
-        public string KitNumber
-        {
-            get { return kitnumber; }
-            set
-            {
-                kitnumber = value;
-                OnPropertyChanged("KitNumber");
-            }
-        }
-
-        public String Name
-        {
-            get { return name; }
-            set
-            {
-                name = value;
-                OnPropertyChanged("Name");
-            }
-        }
-
-        public System.Windows.Media.Brush StatusColor
-        {
-            get { return statusColor; }
-            set
-            {
-                statusColor = value;
-                OnPropertyChanged("StatusColor");
-            }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private void OnPropertyChanged(string info)
-        {
-            PropertyChangedEventHandler handler = PropertyChanged;
-            if (handler != null)
-            {
-                handler(this, new PropertyChangedEventArgs(info));
-            }
         }
 
         public void add_use(object sender, RoutedEventArgs e)
