@@ -44,27 +44,33 @@ namespace SterillizationTracking.StackPanelClasses
             kit_number_label.Padding = new Thickness(10);
             Children.Add(kit_number_label);
 
-            text_box = new TextBox();
-            Binding description_binding = new Binding(path: "Description");
-            description_binding.Mode = BindingMode.TwoWay;
-            description_binding.Source = new_kit;
-            description_binding.UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged;
-            text_box.SetBinding(TextBox.TextProperty, description_binding);
-            text_box.LostFocus += new_kit.update;
-            text_box.Width = 150;
-            text_box.Padding = new Thickness(10);
-            text_box.IsReadOnly = true;
-            Children.Add(text_box);
+            StackPanel stackPanel = new StackPanel();
+            stackPanel.Orientation = Orientation.Vertical;
+            foreach (BaseOnePartKit kit in new_kit.Kits)
+            {
+                text_box = new TextBox();
+                Binding description_binding = new Binding(path: "Description");
+                description_binding.Mode = BindingMode.TwoWay;
+                description_binding.Source = kit;
+                description_binding.UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged;
+                text_box.SetBinding(TextBox.TextProperty, description_binding);
+                text_box.LostFocus += new_kit.update;
+                text_box.Width = 150;
+                text_box.Padding = new Thickness(10);
+                text_box.IsReadOnly = true;
+                stackPanel.Children.Add(text_box);
 
-            current_use_label = new Label();
-            current_use_label.Width = 150;
-            Binding myBinding = new Binding("CurrentUseString");
-            myBinding.Source = new_kit;
-            current_use_label.SetBinding(Label.ContentProperty, myBinding);
-            current_use_label.SetBinding(Label.BackgroundProperty, colorBinding);
-            current_use_label.Padding = new Thickness(10);
-            Children.Add(current_use_label);
+                current_use_label = new Label();
+                current_use_label.Width = 150;
+                Binding myBinding = new Binding("CurrentUseString");
+                myBinding.Source = kit;
+                current_use_label.SetBinding(Label.ContentProperty, myBinding);
+                current_use_label.SetBinding(Label.BackgroundProperty, colorBinding);
+                current_use_label.Padding = new Thickness(10);
+                stackPanel.Children.Add(current_use_label);
+            }
 
+            Children.Add(stackPanel);
             add_use_button = new Button();
             Binding canAddBinding = new Binding("CanAdd");
             canAddBinding.Source = new_kit;

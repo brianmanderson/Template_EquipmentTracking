@@ -154,7 +154,7 @@ namespace SterillizationTracking.Kit_Classes
                         string description = line.Split("Description:")[1].Split('$')[0];
                         int current_use = Convert.ToInt32(line.Split("Current Use:")[1].Split('$')[0]);
                         int total_use = Convert.ToInt32(line.Split("Total Use:")[2].Split('$')[0]);
-                        int warning_use = Convert.ToInt32(line.Split("Warning Use:")[3]);
+                        int warning_use = Convert.ToInt32(line.Split("Warning Uses:")[3]);
                         BaseOnePartKit new_kit = new BaseOnePartKit(current_use, total_use, warning_use, description);
                         Kits.Add(new_kit);
                     }
@@ -182,14 +182,10 @@ namespace SterillizationTracking.Kit_Classes
 
         public List<string> create_file_lines()
         {
-            List<string> lines = new List<string>
-            {
-                $"Description:{Description}"
-            };
+            List<string> lines = new List<string>();
             foreach (BaseOnePartKit kit in Kits)
             {
-                string kit_desc = kit.Description_;
-                lines.Add($"Current Use_{kit_desc}:{kit.CurrentUse}$Total Use_{kit_desc}:{kit.Total_Uses}$Warning Uses_{kit_desc}:{kit.Warning_Uses}");
+                lines.Add($"Description:{kit.Description}$Current Use:{kit.CurrentUse}$Total Use:{kit.Total_Uses}$Warning Uses:{kit.Warning_Uses}");
             }
             lines.Add($"Last updated:{Present}");
             return lines;
