@@ -12,18 +12,18 @@
             </StackPanel>
         </ScrollViewer>
 
-        <Button x:Name="Add_Kit_Button" Content="Add Kit" IsEnabled="False" HorizontalAlignment="Left" Height="36" Margin="377,28,0,0" VerticalAlignment="Top" Width="136" Click="Add_Kit_Button_Click"/>
-        <ComboBox x:Name="Kit_ComboBox" HorizontalAlignment="Left" Margin="33,28,0,0" VerticalAlignment="Top" Width="156" Height="36"
+        <Button x:Name="Add_Kit_Button" Content="Add Kit" IsEnabled="False" HorizontalAlignment="Left" Height="36" Margin="532,30,0,0" VerticalAlignment="Top" Width="136" Click="Add_Kit_Button_Click"/>
+        <ComboBox x:Name="Kit_ComboBox" HorizontalAlignment="Left" Margin="195,30,0,0" VerticalAlignment="Top" Width="156" Height="36"
                   SelectionChanged="Kit_ComboBox_SelectionChanged" SelectedIndex="0">
         </ComboBox>
-        <ComboBox x:Name="KitNumber_ComboBox" HorizontalAlignment="Left" Margin="214,28,0,0" VerticalAlignment="Top" Width="141" Height="36"
+        <ComboBox x:Name="KitNumber_ComboBox" HorizontalAlignment="Left" Margin="379,30,0,0" VerticalAlignment="Top" Width="141" Height="36"
                   SelectionChanged="KitNumber_ComboBox_SelectionChanged" IsEnabled="False">
         </ComboBox>
-        <ComboBox x:Name="FilterNameComboBox" Margin="533,28,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="202" Height="36"
+        <ComboBox x:Name="FilterNameComboBox" Margin="687,30,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="202" Height="36"
                   SelectionChanged="FilterNameComboBox_SelectionChanged" IsEnabled="True" SelectedIndex="0"/>
-        <TextBlock TextWrapping="WrapWithOverflow" HorizontalAlignment="Left" Margin="767,28,0,0" VerticalAlignment="Top" Height="36" Width="420">
-            For issues, please e-mail Brian Anderson @ b5anderson@health.ucsd.edu
-            Thank you to Emily for help in program creation.
+        <TextBlock TextWrapping="WrapWithOverflow" HorizontalAlignment="Left" Margin="905,39,0,0" VerticalAlignment="Top" Height="18" Width="420">
+            For issues, please e-mail Brian Anderson @ brian_anderson@med.unc.edu
         </TextBlock>
+        <Button x:Name="CreateTemplate" Content="Create Template" IsEnabled="True" HorizontalAlignment="Left" Height="36" Margin="32,29,0,0" VerticalAlignment="Top" Width="136" Click="CreateTemplate_Button_Click"/>
     </Grid>
 </Window>

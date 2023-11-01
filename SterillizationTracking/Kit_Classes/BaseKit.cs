@@ -120,6 +120,23 @@ namespace SterillizationTracking.Kit_Classes
             UsageDates = new List<string>();
             build_read_use_file();
         }
+        public BaseKit(string name)
+        {
+            Name = name;
+        }
+        public void add_kit(int total_uses, int warning_uses, string description)
+        {
+            Kits.Add(new BaseOnePartKit(0, total_uses, warning_uses, description));
+        }
+        public void build_template_file(string path)
+        {
+            List<string> lines = create_file_lines();
+            if (!Directory.Exists(KitDirectoryPath))
+            {
+                Directory.CreateDirectory(KitDirectoryPath);
+            }
+            File.WriteAllLines(path, lines);
+        }
         public void reset()
         {
             UsageDates = new List<string>();

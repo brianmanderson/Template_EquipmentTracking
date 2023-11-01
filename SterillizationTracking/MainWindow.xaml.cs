@@ -71,6 +71,16 @@ namespace SterillizationTracking
                 OnPropertyChanged("Kit_Names");
             }
         }
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChangedEventHandler handler = this.PropertyChanged;
+            if (handler != null)
+            {
+                var e = new PropertyChangedEventArgs(propertyName);
+                handler(this, e);
+            }
+        }
         public MainWindow()
         {
             InitializeComponent();
@@ -92,17 +102,6 @@ namespace SterillizationTracking
             Filter_Kit_Names = _filter_kit_names;
             filter_kit_binding.Source = this;
             FilterNameComboBox.SetBinding(ComboBox.ItemsSourceProperty, filter_kit_binding);
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChangedEventHandler handler = this.PropertyChanged;
-            if (handler != null)
-            {
-                var e = new PropertyChangedEventArgs(propertyName);
-                handler(this, e);
-            }
         }
 
         public void Add_Kit(string kit_name, string kit_number, string file_path)
@@ -231,5 +230,9 @@ namespace SterillizationTracking
             }
         }
 
+        private void CreateTemplate_Button_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
