@@ -31,14 +31,23 @@ namespace SterillizationTracking.Kit_Classes
         }
         public int Total_Uses;
         public int Warning_Uses;
-        public string Description_;
 
         private int currentUse;
         private string currentUse_string, usesLeft_string;
         private System.Windows.Media.Brush statusColor;
         private int usesLeft;
         private bool can_reorder, canAdd;
+        private string _description;
 
+        public string Description
+        {
+            get { return _description; }
+            set
+            {
+                _description = value;
+                OnPropertyChanged("Description");
+            }
+        }
         public System.Windows.Media.Brush StatusColor
         {
             get { return statusColor; }
@@ -109,7 +118,7 @@ namespace SterillizationTracking.Kit_Classes
             CurrentUse = current_use;
             Warning_Uses = warning_uses;
             Total_Uses = total_uses;
-            Description_ = description;
+            Description = description;
         }
 
         public void add_use()
@@ -123,7 +132,7 @@ namespace SterillizationTracking.Kit_Classes
             CurrentUse -= 1;
             check_status();
         }
-        public void reorder()
+        public void reset()
         {
             CurrentUse = 0;
             check_status();

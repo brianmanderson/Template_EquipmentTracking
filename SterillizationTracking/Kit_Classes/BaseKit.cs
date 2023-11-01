@@ -90,15 +90,6 @@ namespace SterillizationTracking.Kit_Classes
                 OnPropertyChanged("Name");
             }
         }
-        public string Description
-        {
-            get { return _description; }
-            set
-            {
-                _description = value;
-                OnPropertyChanged("Description");
-            }
-        }
         public List<string> UsageDates
         {
             get
@@ -111,14 +102,18 @@ namespace SterillizationTracking.Kit_Classes
                 OnPropertyChanged("UsageDates");
             }
         }
-        public BaseKit(string name, string kitnumber, string file_path, string description)
+        public BaseKit(string name, string kitnumber, string file_path)
         {
             Name = name;
-            Description = description;
             KitNumber = $"Kit #: {kitnumber}";
             KitDirectoryPath = Path.Combine(file_path, name, $"Kit {kitnumber}");
             UseFileLocation = Path.Combine(KitDirectoryPath, "Uses.txt");
             UsageDates = new List<string>();
+        }
+        public void reset()
+        {
+            UsageDates = new List<string>();
+            foreach (BaseOnePartKit kit in Kits) { kit.reset(); }
         }
         public void add_use(object sender, RoutedEventArgs e)
         {
@@ -152,27 +147,25 @@ namespace SterillizationTracking.Kit_Classes
             if (File.Exists(UseFileLocation))
             {
                 List<string> lines = File.ReadAllLines(UseFileLocation).ToList();
-                int ind = 0;
                 foreach (string line in lines)
                 {
-                    if (ind == 0)
+                    if (line.Contains("Description"))
                     {
-                        Description = line.Split("Description:")[1];
-                    }
-                    else if (line.Contains("Current"))
-                    {
-                        int current_use = Convert.ToInt32(line.Split(':')[1].Split('$')[0]);
-                        int total_use = Convert.ToInt32(line.Split(':')[2].Split('$')[0]);
-                        int warning_use = Convert.ToInt32(line.Split(':')[3]);
-                        string description = line.Split('_')[1].Split(':')[0];
+                        string description = line.Split("Description:")[1].Split('$')[0];
+                        int current_use = Convert.ToInt32(line.Split("Current Use:")[1].Split('$')[0]);
+                        int total_use = Convert.ToInt32(line.Split("Total Use:")[2].Split('$')[0]);
+                        int warning_use = Convert.ToInt32(line.Split("Warning Use:")[3]);
                         BaseOnePartKit new_kit = new BaseOnePartKit(current_use, total_use, warning_use, description);
                         Kits.Add(new_kit);
                     }
-                    else if (!line.Contains("Last"))
+                    else if (line.Contains("Last"))
+                    {
+                        Present = line.Split("updated:")[1];
+                    }
+                    else
                     {
                         UsageDates.Add(line);
                     }
-                    ind++;
                 }
             }
             else
@@ -239,7 +232,8 @@ namespace SterillizationTracking.Kit_Classes
         }
         public void reorder(object sender, RoutedEventArgs e)
         {
-
+            foreach(BaseOnePartKit kit in Kits) { kit.reset(); }
+            create_reorder_file();
         }
     }
 }
