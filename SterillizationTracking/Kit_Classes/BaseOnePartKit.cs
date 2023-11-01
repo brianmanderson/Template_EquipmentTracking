@@ -29,12 +29,25 @@ namespace SterillizationTracking.Kit_Classes
                 handler(this, new PropertyChangedEventArgs(info));
             }
         }
+        public int Total_Uses;
+        public int Warning_Uses;
+        public string Description_;
+
         private int currentUse;
-        private string currentUse_string, usesLeft_string, description;
+        private string currentUse_string, usesLeft_string;
         private System.Windows.Media.Brush statusColor;
-
         private int usesLeft;
+        private bool can_reorder, canAdd;
 
+        public System.Windows.Media.Brush StatusColor
+        {
+            get { return statusColor; }
+            set
+            {
+                statusColor = value;
+                OnPropertyChanged("StatusColor");
+            }
+        }
         public string CurrentUseString
         {
             get { return currentUse_string; }
@@ -81,9 +94,6 @@ namespace SterillizationTracking.Kit_Classes
                 OnPropertyChanged("UsesLeft");
             }
         }
-        public int Total_Uses;
-        public int Warning_Uses;
-        private bool can_reorder;
         public bool CanReorder
         {
             get { return can_reorder; }
@@ -91,16 +101,6 @@ namespace SterillizationTracking.Kit_Classes
             {
                 can_reorder = value;
                 OnPropertyChanged("CanReorder");
-            }
-        }
-        public string Description_;
-        public System.Windows.Media.Brush StatusColor
-        {
-            get { return statusColor; }
-            set
-            {
-                statusColor = value;
-                OnPropertyChanged("StatusColor");
             }
         }
         public BaseOnePartKit(int current_use, int total_uses, int warning_uses, string description) //string name, int allowed_steralizaitons, int warning_use
@@ -121,20 +121,13 @@ namespace SterillizationTracking.Kit_Classes
             check_status();
         }
 
-        public void remove_use(object sender, RoutedEventArgs e)
+        public void remove_use()
         {
             CurrentUse -= 1;
             CurrentUseString = $"Current use: {CurrentUse}";
-            UsesLeft = total_uses - CurrentUse;
+            UsesLeft = Total_Uses - CurrentUse;
             UsesLeftString = $"Uses left: {UsesLeft}";
-            UsageDates.RemoveAt(UsageDates.Count - 1);
-            update_file();
             check_status();
-        }
-
-        public void update(object sender, RoutedEventArgs e)
-        {
-            update_file();
         }
         public void check_status()
         {

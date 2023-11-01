@@ -223,5 +223,19 @@ namespace SterillizationTracking.Kit_Classes
             }
             File.WriteAllLines(UseFileLocation, info);
         }
+        public void update(object sender, RoutedEventArgs e)
+        {
+            update_file();
+        }
+        public void remove_use(object sender, RoutedEventArgs e)
+        {
+            foreach (BaseOnePartKit kit in Kits)
+            {
+                kit.remove_use();
+            }
+            UsageDates.RemoveAt(UsageDates.Count - 1);
+            update_file();
+            check_status();
+        }
     }
 }
