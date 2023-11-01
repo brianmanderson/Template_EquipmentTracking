@@ -42,6 +42,15 @@ namespace SterillizationTracking.Kit_Classes
                 OnPropertyChanged("CanReorderKit");
             }
         }
+        public bool CanAdd
+        {
+            get { return canAdd; }
+            set
+            {
+                canAdd = value;
+                OnPropertyChanged("CanAdd");
+            }
+        }
         public string Present
         {
             get { return _present; }
@@ -115,16 +124,28 @@ namespace SterillizationTracking.Kit_Classes
         {
             DateTime moment = DateTime.Now;
             Present = moment.ToLongDateString() + " " + moment.ToLongTimeString();
-            CanReorderKit = false;
             foreach (BaseOnePartKit base_kit in Kits)
             {
                 base_kit.add_use();
+            }
+            update_file();
+            check_status();
+        }
+        public void check_status()
+        {
+            CanReorderKit = false;
+            CanAdd = true;
+            foreach (BaseOnePartKit base_kit in Kits)
+            {
                 if (base_kit.CanReorder)
                 {
                     CanReorderKit = true;
                 }
+                if (!base_kit.CanAdd)
+                {
+                    CanAdd = false;
+                }
             }
-            update_file();
         }
         public void build_read_use_file()
         {
@@ -156,24 +177,30 @@ namespace SterillizationTracking.Kit_Classes
             }
             else
             {
-                string[] info = { $"Description:{Description}", $"Current Use:{0}", $"Total Uses:{total_uses}", $"Warning Uses:{warning_uses}", $"Last updated:{Present}" };
+                List<string> lines = create_file_lines();
                 if (!Directory.Exists(KitDirectoryPath))
                 {
                     Directory.CreateDirectory(KitDirectoryPath);
                 }
-                File.WriteAllLines(UseFileLocation, info);
+                File.WriteAllLines(UseFileLocation, lines);
             }
             check_status();
-            CurrentUseString = $"Current use: {CurrentUse}";
-            UsesLeft = total_uses - CurrentUse;
-            UsesLeftString = $"Uses left: {UsesLeft}";
-            CanAdd = true;
-            if (total_uses - CurrentUse == 0)
-            {
-                CanAdd = false;
-            }
         }
 
+        public List<string> create_file_lines()
+        {
+            List<string> lines = new List<string>
+            {
+                $"Description:{Description}"
+            };
+            foreach (BaseOnePartKit kit in Kits)
+            {
+                string kit_desc = kit.Description_;
+                lines.Add($"Current Use_{kit_desc}:{kit.CurrentUse}$Total Use_{kit_desc}:{kit.Total_Uses}$Warning Uses_{kit_desc}:{kit.Warning_Uses}");
+            }
+            lines.Add($"Last updated:{Present}");
+            return lines;
+        }
         public void create_reorder_file()
         {
             ReorderDirectoryPath = Path.Combine(KitDirectoryPath, "Reorders");
@@ -188,8 +215,7 @@ namespace SterillizationTracking.Kit_Classes
         }
         public void update_file()
         {
-            List<string> info = new List<string>() { $"Description:{Description}", $"Current Use:{CurrentUse}",
-                $"Total Uses:{total_uses}", $"Warning Uses:{warning_uses}", $"Last updated:{Present}" };
+            List<string> info = create_file_lines();
             info.AddRange(UsageDates);
             if (!Directory.Exists(KitDirectoryPath))
             {
