@@ -115,22 +115,24 @@ namespace SterillizationTracking.Kit_Classes
         public void add_use()
         {
             CurrentUse += 1;
-            CurrentUseString = $"Current use: {CurrentUse}";
-            UsesLeft = Total_Uses - CurrentUse;
-            UsesLeftString = $"Uses left: {UsesLeft}";
             check_status();
         }
 
         public void remove_use()
         {
             CurrentUse -= 1;
-            CurrentUseString = $"Current use: {CurrentUse}";
-            UsesLeft = Total_Uses - CurrentUse;
-            UsesLeftString = $"Uses left: {UsesLeft}";
+            check_status();
+        }
+        public void reorder()
+        {
+            CurrentUse = 0;
             check_status();
         }
         public void check_status()
         {
+            CurrentUseString = $"Current use: {CurrentUse}";
+            UsesLeft = Total_Uses - CurrentUse;
+            UsesLeftString = $"Uses left: {UsesLeft}";
             if (CurrentUse >= Total_Uses)
             {
                 StatusColor = System.Windows.Media.Brushes.Red;

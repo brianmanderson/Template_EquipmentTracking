@@ -23,7 +23,7 @@ namespace SterillizationTracking.StackPanelClasses
         public CheckBox override_checkbox;
         public TextBox text_box;
 
-        public AddKitRow(BaseOnePartKit new_kit)
+        public AddKitRow(BaseKit new_kit)
         {
             Orientation = Orientation.Horizontal;
             Binding colorBinding = new Binding("StatusColor");
