@@ -18,7 +18,8 @@ namespace SterillizationTracking.StackPanelClasses
 {
     class AddKitRow : StackPanel
     {
-        public Button add_use_button, remove_use_button, reorder_button;
+        public Button add_use_button, remove_use_button, reorder_button, reset_button;
+        public List<TextBox> text_boxes;
         public Label current_use_label, kit_label, kit_number_label, override_label, status_label, uses_left_label, last_updated, description_label;
         public CheckBox override_checkbox;
         public TextBox text_box;
@@ -26,8 +27,6 @@ namespace SterillizationTracking.StackPanelClasses
         public AddKitRow(BaseKit new_kit)
         {
             Orientation = Orientation.Horizontal;
-            Binding colorBinding = new Binding("StatusColor");
-            colorBinding.Source = new_kit;
 
             kit_label = new Label();
             kit_label.Width = 150;
@@ -44,10 +43,13 @@ namespace SterillizationTracking.StackPanelClasses
             kit_number_label.Padding = new Thickness(10);
             Children.Add(kit_number_label);
 
-            StackPanel stackPanel = new StackPanel();
-            stackPanel.Orientation = Orientation.Vertical;
+            StackPanel stackPanel_all = new StackPanel();
+            stackPanel_all.Orientation = Orientation.Vertical;
+            text_boxes = new List<TextBox>();
             foreach (BaseOnePartKit kit in new_kit.Kits)
             {
+                StackPanel stackPanel = new StackPanel();
+                stackPanel.Orientation = Orientation.Horizontal;
                 text_box = new TextBox();
                 Binding description_binding = new Binding(path: "Description");
                 description_binding.Mode = BindingMode.TwoWay;
@@ -58,6 +60,7 @@ namespace SterillizationTracking.StackPanelClasses
                 text_box.Width = 150;
                 text_box.Padding = new Thickness(10);
                 text_box.IsReadOnly = true;
+                text_boxes.Add(text_box);
                 stackPanel.Children.Add(text_box);
 
                 current_use_label = new Label();
@@ -65,12 +68,22 @@ namespace SterillizationTracking.StackPanelClasses
                 Binding myBinding = new Binding("CurrentUseString");
                 myBinding.Source = kit;
                 current_use_label.SetBinding(Label.ContentProperty, myBinding);
-                current_use_label.SetBinding(Label.BackgroundProperty, colorBinding);
+
+                Binding kit_colorBinding = new Binding("StatusColor");
+                kit_colorBinding.Source = kit;
+                current_use_label.SetBinding(Label.BackgroundProperty, kit_colorBinding);
                 current_use_label.Padding = new Thickness(10);
                 stackPanel.Children.Add(current_use_label);
-            }
 
-            Children.Add(stackPanel);
+                uses_left_label = new Label();
+                uses_left_label.Width = 150;
+                Binding usesleft_binding = new Binding("UsesLeftString");
+                usesleft_binding.Source = kit;
+                uses_left_label.SetBinding(Label.ContentProperty, usesleft_binding);
+                stackPanel.Children.Add(uses_left_label);
+                stackPanel_all.Children.Add(stackPanel);
+            }
+            Children.Add(stackPanel_all);
             add_use_button = new Button();
             Binding canAddBinding = new Binding("CanAdd");
             canAddBinding.Source = new_kit;
@@ -91,7 +104,7 @@ namespace SterillizationTracking.StackPanelClasses
 
             reorder_button = new Button();
             reorder_button.Width = 100;
-            Binding reorderBinding = new Binding("CanReorder");
+            Binding reorderBinding = new Binding("CanReorderKit");
             reorderBinding.Source = new_kit;
             reorder_button.Click += new_kit.reorder;
             reorder_button.Click += reordered;
@@ -100,18 +113,22 @@ namespace SterillizationTracking.StackPanelClasses
             reorder_button.SetBinding(Button.IsEnabledProperty, reorderBinding);
             Children.Add(reorder_button);
 
-            uses_left_label = new Label();
-            Binding usesleft_binding = new Binding("UsesLeftString");
-            usesleft_binding.Source = new_kit;
-            uses_left_label.SetBinding(Label.ContentProperty, usesleft_binding);
-            uses_left_label.Padding = new Thickness(10);
-            Children.Add(uses_left_label);
+            Binding colorBinding = new Binding("StatusColor");
+            colorBinding.Source = new_kit;
 
             status_label = new Label();
             status_label.Content = "Status";
             status_label.SetBinding(Label.BackgroundProperty, colorBinding);
             status_label.Padding = new Thickness(10);
             Children.Add(status_label);
+
+            reset_button = new Button();
+            reset_button.Width = 100;
+            reset_button.IsEnabled = false;
+            reset_button.Click += new_kit.reset;
+            reset_button.Content = "Reset?";
+            reset_button.Padding = new Thickness(10);
+            Children.Add(reset_button);
 
             override_label = new Label();
             override_label.Content = "Override?";
@@ -158,13 +175,22 @@ namespace SterillizationTracking.StackPanelClasses
                 add_use_button.IsEnabled = true;
                 remove_use_button.IsEnabled = true;
                 reorder_button.IsEnabled = true;
-                text_box.IsReadOnly = false;
+                reset_button.IsEnabled = true;
+                foreach (TextBox tb in text_boxes)
+                {
+                    tb.IsReadOnly = false;
+                }
             }
         }
         private void CheckBox_UnChecked(object sender, RoutedEventArgs e)
         {
             remove_use_button.IsEnabled = false;
-            text_box.IsReadOnly = true;
+            reorder_button.IsEnabled = false;
+            reset_button.IsEnabled = false;
+            foreach (TextBox tb in text_boxes)
+            {
+                tb.IsReadOnly = true;
+            }
         }
     }
 }

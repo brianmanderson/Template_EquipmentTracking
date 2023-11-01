@@ -21,7 +21,7 @@ namespace SterillizationTracking.Kit_Classes
                 handler(this, new PropertyChangedEventArgs(info));
             }
         }
-        public List<BaseOnePartKit> Kits;
+        public List<BaseOnePartKit> Kits = new List<BaseOnePartKit>();
         public string KitDirectoryPath;
         public string ReorderDirectoryPath;
 
@@ -30,9 +30,18 @@ namespace SterillizationTracking.Kit_Classes
         private string useFileLocation;
         private bool can_reorder_kit, canAdd;
         private string _present;
-        private string _description;
         private List<string> usageDates = new List<string>();
+        private System.Windows.Media.Brush statusColor;
 
+        public System.Windows.Media.Brush StatusColor
+        {
+            get { return statusColor; }
+            set
+            {
+                statusColor = value;
+                OnPropertyChanged("StatusColor");
+            }
+        }
         public bool CanReorderKit
         {
             get { return can_reorder_kit; }
@@ -109,29 +118,21 @@ namespace SterillizationTracking.Kit_Classes
             KitDirectoryPath = Path.Combine(file_path, name, $"Kit {kitnumber}");
             UseFileLocation = Path.Combine(KitDirectoryPath, "Uses.txt");
             UsageDates = new List<string>();
+            build_read_use_file();
         }
         public void reset()
         {
             UsageDates = new List<string>();
             foreach (BaseOnePartKit kit in Kits) { kit.reset(); }
         }
-        public void add_use(object sender, RoutedEventArgs e)
-        {
-            DateTime moment = DateTime.Now;
-            Present = moment.ToLongDateString() + " " + moment.ToLongTimeString();
-            foreach (BaseOnePartKit base_kit in Kits)
-            {
-                base_kit.add_use();
-            }
-            update_file();
-            check_status();
-        }
         public void check_status()
         {
             CanReorderKit = false;
             CanAdd = true;
+            int status_int = 0;
             foreach (BaseOnePartKit base_kit in Kits)
             {
+                base_kit.check_status();
                 if (base_kit.CanReorder)
                 {
                     CanReorderKit = true;
@@ -139,6 +140,11 @@ namespace SterillizationTracking.Kit_Classes
                 if (!base_kit.CanAdd)
                 {
                     CanAdd = false;
+                }
+                if (status_int < base_kit.StatusInt)
+                {
+                    StatusColor = base_kit.StatusColor;
+                    status_int = base_kit.StatusInt;
                 }
             }
         }
@@ -153,8 +159,8 @@ namespace SterillizationTracking.Kit_Classes
                     {
                         string description = line.Split("Description:")[1].Split('$')[0];
                         int current_use = Convert.ToInt32(line.Split("Current Use:")[1].Split('$')[0]);
-                        int total_use = Convert.ToInt32(line.Split("Total Use:")[2].Split('$')[0]);
-                        int warning_use = Convert.ToInt32(line.Split("Warning Uses:")[3]);
+                        int total_use = Convert.ToInt32(line.Split("Total Use:")[1].Split('$')[0]);
+                        int warning_use = Convert.ToInt32(line.Split("Warning Uses:")[1]);
                         BaseOnePartKit new_kit = new BaseOnePartKit(current_use, total_use, warning_use, description);
                         Kits.Add(new_kit);
                     }
@@ -216,6 +222,18 @@ namespace SterillizationTracking.Kit_Classes
         {
             update_file();
         }
+        public void add_use(object sender, RoutedEventArgs e)
+        {
+            DateTime moment = DateTime.Now;
+            Present = moment.ToLongDateString() + " " + moment.ToLongTimeString();
+            foreach (BaseOnePartKit base_kit in Kits)
+            {
+                base_kit.add_use();
+            }
+            UsageDates.Add(Present);
+            update_file();
+            check_status();
+        }
         public void remove_use(object sender, RoutedEventArgs e)
         {
             foreach (BaseOnePartKit kit in Kits)
@@ -228,8 +246,28 @@ namespace SterillizationTracking.Kit_Classes
         }
         public void reorder(object sender, RoutedEventArgs e)
         {
-            foreach(BaseOnePartKit kit in Kits) { kit.reset(); }
             create_reorder_file();
+            bool CanReorderAll = true;
+            foreach (BaseOnePartKit kit in Kits)
+            {
+                if (!kit.CanReorder)
+                {
+                    CanReorderAll = false;
+                }
+                kit.reorder();
+            }
+            if (CanReorderAll)
+            {
+                reset();
+            }
+            check_status();
+            update_file();
+        }
+        public void reset(object sender, RoutedEventArgs e)
+        {
+            reset();
+            check_status();
+            update_file();
         }
     }
 }

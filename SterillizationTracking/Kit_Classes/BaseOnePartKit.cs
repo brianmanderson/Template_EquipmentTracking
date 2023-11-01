@@ -31,6 +31,7 @@ namespace SterillizationTracking.Kit_Classes
         }
         public int Total_Uses;
         public int Warning_Uses;
+        public int StatusInt;
 
         private int currentUse;
         private string currentUse_string, usesLeft_string;
@@ -123,7 +124,10 @@ namespace SterillizationTracking.Kit_Classes
 
         public void add_use()
         {
-            CurrentUse += 1;
+            if (CurrentUse < Total_Uses)
+            {
+                CurrentUse += 1;
+            }
             check_status();
         }
 
@@ -137,6 +141,13 @@ namespace SterillizationTracking.Kit_Classes
             CurrentUse = 0;
             check_status();
         }
+        public void reorder()
+        {
+            if (CurrentUse == Total_Uses)
+            {
+                reset();
+            }
+        }
         public void check_status()
         {
             CurrentUseString = $"Current use: {CurrentUse}";
@@ -146,16 +157,22 @@ namespace SterillizationTracking.Kit_Classes
             {
                 StatusColor = System.Windows.Media.Brushes.Red;
                 CanReorder = true;
+                CanAdd = false;
+                StatusInt = 3;
             }
             else if (CurrentUse >= Warning_Uses * 0.75)
             {
                 StatusColor = System.Windows.Media.Brushes.Yellow;
                 CanReorder = false;
+                CanAdd = true;
+                StatusInt = 2;
             }
             else
             {
                 StatusColor = System.Windows.Media.Brushes.Green;
                 CanReorder = false;
+                CanAdd = true;
+                StatusInt = 1;
             }
         }
     }
