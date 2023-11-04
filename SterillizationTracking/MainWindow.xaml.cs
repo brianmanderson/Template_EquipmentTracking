@@ -107,17 +107,21 @@ namespace SterillizationTracking
             FilterNameComboBox.SetBinding(ComboBox.ItemsSourceProperty, kit_name_binding);
         }
 
-        public void Add_Kit(string kit_name, string kit_number, string file_path)
+        public void Add_Kit(TemplateKit template_kit, string kit_number, string file_path)
         {
-            BaseKit new_kit = new BaseKit(name: kit_name, kitnumber: kit_number, file_path: file_path);
+            BaseKit new_kit = new BaseKit(name: template_kit.Name, kitnumber: kit_number, file_path: file_path);
+            foreach (TemplatePart part in template_kit.Parts)
+            {
+                new_kit.add_kit(part.Total_Uses, part.Warning_Uses, part.Description);
+            }
             AddKitRow new_row = new AddKitRow(new_kit);
             KitStackPanel.Children.Add(new_row);
         }
         private void Add_Kit_Button_Click(object sender, RoutedEventArgs e)
         {
-            kit_name = Kit_Names[Kit_ComboBox.SelectedIndex];
+            TemplateKit kit = (TemplateKit)Kit_ComboBox.SelectedItem;
             kit_number = Kit_Numbers[KitNumber_ComboBox.SelectedIndex];
-            Add_Kit(kit_name: kit_name, kit_number: kit_number, file_path: applicator_directory);
+            Add_Kit(kit, kit_number: kit_number, file_path: applicator_directory);
             Kit_ComboBox.SelectedIndex = 0;
         }
 
@@ -138,7 +142,7 @@ namespace SterillizationTracking
                 string[] temp_list = directory_kit_name.Split('\\');
                 string applicator_name = temp_list[temp_list.Length - 1];
 
-                string full_applicator_path = System.IO.Path.Combine(applicator_directory, directory_kit_name);
+                string full_applicator_path = Path.Combine(applicator_directory, directory_kit_name);
                 kit_list = Directory.GetDirectories(full_applicator_path);
                 if (kit_list.Length > 0)
                 {
