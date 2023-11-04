@@ -29,8 +29,8 @@ namespace SterillizationTracking.Kit_Classes
                 handler(this, new PropertyChangedEventArgs(info));
             }
         }
-        public int Total_Uses;
-        public int Warning_Uses;
+        public int Total_Uses { get; set; }
+        public int Warning_Uses { get; set; }
         public int StatusInt;
 
         private int currentUse;

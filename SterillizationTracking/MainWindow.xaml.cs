@@ -12,12 +12,13 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using System.Windows.Shapes;
 using SterillizationTracking.Kit_Classes;
 using SterillizationTracking.StackPanelClasses;
 using SterillizationTracking.Services;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using SterillizationTracking.TemplateWindow;
+using System.Text.Json;
 
 namespace SterillizationTracking
 {
@@ -28,12 +29,12 @@ namespace SterillizationTracking
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
         private List<string> _kit_numbers = new List<string> { "" };
-        private List<string> _kit_names = new List<string> { "Select an applicator", "Cylinder", "Cervix Applicator Set", "Needle Kit", "Segmented Cylinder", 
-            "Tandem and Ovoid", "Tandem and Ring", "Y Applicator"};
-        private List<string> _filter_kit_names = new List<string> { "All applicators", "Cylinder", "Cervix Applicator Set", "Needle Kit", "Segmented Cylinder",
-            "Tandem and Ovoid", "Tandem and Ring", "Y Applicator"};
+        private List<string> _kit_names = new List<string> { "Select an applicator"};
+        private List<string> _filter_kit_names = new List<string> { "All applicators"};
 
-        public string applicator_directory = @"\\lantis1.unch.unc.edu\research_non_phi\Brachy";  //\\ucsdhc-varis2\radonc$\HDR updates\Steralization_Kits_Tracking\Kit_Status
+        public string base_directory = @"\\lantis1.unch.unc.edu\research_non_phi\Brachy";
+        public string applicator_directory;
+        public string template_file;
         public string kit_name;
         public string kit_number;
         public List<string> Kit_Numbers
@@ -81,9 +82,12 @@ namespace SterillizationTracking
                 handler(this, e);
             }
         }
+        private TemplateKitLibrary library;
         public MainWindow()
         {
             InitializeComponent();
+            template_file = Path.Combine(base_directory, "Templates.json");
+            applicator_directory = Path.Combine(base_directory, "Applicators");
             if (!Directory.Exists(applicator_directory))
             {
                 Directory.CreateDirectory(applicator_directory);
@@ -93,15 +97,14 @@ namespace SterillizationTracking
             number_binding.Source = this;
             KitNumber_ComboBox.SetBinding(ComboBox.ItemsSourceProperty, number_binding);
 
-            Binding kit_name_binding = new Binding("Kit_Names");
-            Kit_Names = _kit_names;
-            kit_name_binding.Source = this;
+            Binding kit_name_binding = new Binding("Kits");
+            kit_name_binding.Source = library;
+            Kit_ComboBox.DisplayMemberPath = "Name";
             Kit_ComboBox.SetBinding(ComboBox.ItemsSourceProperty, kit_name_binding);
 
-            Binding filter_kit_binding = new Binding("Filter_Kit_Names");
             Filter_Kit_Names = _filter_kit_names;
-            filter_kit_binding.Source = this;
-            FilterNameComboBox.SetBinding(ComboBox.ItemsSourceProperty, filter_kit_binding);
+            FilterNameComboBox.DisplayMemberPath = "Name";
+            FilterNameComboBox.SetBinding(ComboBox.ItemsSourceProperty, kit_name_binding);
         }
 
         public void Add_Kit(string kit_name, string kit_number, string file_path)
@@ -120,6 +123,11 @@ namespace SterillizationTracking
 
         public void Rebuild_From_Files()
         {
+            if (File.Exists(template_file))
+            {
+                string jsonString = File.ReadAllText(template_file);
+                library = JsonSerializer.Deserialize<TemplateKitLibrary>(jsonString);
+            }
             KitStackPanel.Children.Clear();
             string[] applicator_list = Directory.GetDirectories(applicator_directory);
             string[] kit_list;
@@ -232,7 +240,8 @@ namespace SterillizationTracking
 
         private void CreateTemplate_Button_Click(object sender, RoutedEventArgs e)
         {
-
+            TemplateWindowClass template_window = new TemplateWindowClass(base_directory);
+            template_window.ShowDialog();
         }
     }
 }

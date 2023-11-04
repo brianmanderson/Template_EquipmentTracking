@@ -8,17 +8,16 @@
         Title="TemplateWindowClass" Height="450" Width="800">
     <Grid>
         <CheckBox Content="Delete existing template?" HorizontalAlignment="Left" Margin="90,373,0,0" VerticalAlignment="Top" Checked="CheckBox_Checked" Unchecked="CheckBox_UnChecked"/>
-        <ComboBox x:Name="TemplateComboBox" IsEnabled="False" HorizontalAlignment="Left" Height="31" Margin="267,365,0,0" VerticalAlignment="Top" Width="236" SelectionChanged="OnSelectionChanged"/>
-        <TextBlock HorizontalAlignment="Left" Margin="296,16,0,0" TextWrapping="Wrap" Text="Please note that this is for templates! For example creating a Tandom and Ovoid set that is used multiple times, or editing an existing template" VerticalAlignment="Top" Height="44" Width="471"/>
-        <Label Content="Template Name" HorizontalAlignment="Left" Margin="52,95,0,0" VerticalAlignment="Top"/>
-        <TextBlock HorizontalAlignment="Left" Margin="52,126,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Height="27" Width="162"/>
-        <Label Content="Parts" HorizontalAlignment="Left" Margin="219,95,0,0" VerticalAlignment="Top"/>
-        <ScrollViewer VerticalScrollBarVisibility="Visible" Margin="219,126,174,130">
-            <StackPanel Margin="23,27,41,88" x:Name="KitStackPanel" Height="132">
+        <ComboBox x:Name="TemplateComboBox" IsEnabled="True" HorizontalAlignment="Left" Height="31" Margin="267,365,0,0" VerticalAlignment="Top" Width="236"/>
+        <TextBlock HorizontalAlignment="Left" Margin="10,16,0,0" TextWrapping="Wrap" Text="Please note that this is for templates! For example creating a Tandom and Ovoid set that is used multiple times, or editing an existing template" VerticalAlignment="Top" Height="44" Width="757"/>
+        <Label Content="Template Name" HorizontalAlignment="Left" Margin="10,95,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="TemplateNameTextBox" HorizontalAlignment="Left" Margin="10,126,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Height="27" Width="162" LostFocus="Update" TextChanged="TemplateNameTextBox_TextChanged"/>
+        <ScrollViewer VerticalScrollBarVisibility="Visible" Margin="177,126,33,130">
+            <StackPanel Margin="23,27,41,40" x:Name="KitStackPanel" Height="132" Width="524">
             </StackPanel>
         </ScrollViewer>
-        <Button Content="Add_Part" HorizontalAlignment="Left" Margin="267,98,0,0" VerticalAlignment="Top" Width="104"/>
-        <Button x:Name="BuildTemplateButton" Content="Build Template" IsEnabled="False" HorizontalAlignment="Left" Margin="663,154,0,0" VerticalAlignment="Top" Width="104" Height="88" Click="BuildTemplateButton_Click"/>
+        <Button Content="Add Part" HorizontalAlignment="Left" Margin="377,106,0,0" VerticalAlignment="Top" Width="164" Click="AddPart_Click"/>
+        <Button x:Name="BuildTemplateButton" Content="Build Template" IsEnabled="False" HorizontalAlignment="Left" Margin="32,181,0,0" VerticalAlignment="Top" Width="104" Height="88" Click="BuildTemplateButton_Click"/>
         <Button x:Name="DeleteTemplateButton" Content="Delete Template" IsEnabled="False" HorizontalAlignment="Left" Margin="565,365,0,0" VerticalAlignment="Top" Width="150" Height="31" Click="DeleteTemplateButton_Click"/>
     </Grid>
 </Window>

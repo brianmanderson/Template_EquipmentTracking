@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -9,6 +10,21 @@ using System.Windows;
 
 namespace SterillizationTracking.Kit_Classes
 {
+    public class TemplatePart
+    {
+        public int Total_Uses { get; set; }
+        public int Warning_Uses { get; set; }
+        public string Description { get; set; }
+    }
+    public class TemplateKit
+    {
+        public string Name { get; set; }
+        public List<TemplatePart> Parts { get; set; }
+    }
+    public class TemplateKitLibrary
+    {
+        public ObservableCollection<TemplateKit> Kits { get; set; }
+    }
     public class BaseKit : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
@@ -111,6 +127,7 @@ namespace SterillizationTracking.Kit_Classes
                 OnPropertyChanged("UsageDates");
             }
         }
+
         public BaseKit(string name, string kitnumber, string file_path)
         {
             Name = name;
@@ -225,7 +242,7 @@ namespace SterillizationTracking.Kit_Classes
             string file_path = Path.Combine(ReorderDirectoryPath, Present.Replace(":", ".") + ".txt");
             File.WriteAllLines(file_path, UsageDates);
         }
-        public void update_file()
+            public void update_file()
         {
             List<string> info = create_file_lines();
             info.AddRange(UsageDates);
