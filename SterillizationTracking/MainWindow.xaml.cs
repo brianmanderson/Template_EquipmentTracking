@@ -152,7 +152,7 @@ namespace SterillizationTracking
                         if (directory_kit_number.Contains("Kit"))
                         {
                             actual_kit_number = directory_kit_number.Split(' ')[1];
-                            Add_Kit(kit_name: applicator_name, kit_number: actual_kit_number, file_path: applicator_directory);
+                            //Add_Kit(kit_name: applicator_name, kit_number: actual_kit_number, file_path: applicator_directory);
                         }
                     }
                 }
@@ -176,7 +176,7 @@ namespace SterillizationTracking
                 string[] temp_list = directory_kit_name.Split('\\');
                 string applicator_name = temp_list[temp_list.Length - 1];
 
-                string full_applicator_path = System.IO.Path.Combine(applicator_directory, directory_kit_name);
+                string full_applicator_path = Path.Combine(applicator_directory, directory_kit_name);
                 kit_list = Directory.GetDirectories(full_applicator_path);
                 if (kit_list.Length > 0)
                 {
@@ -186,7 +186,7 @@ namespace SterillizationTracking
                         if (directory_kit_number.Contains("Kit"))
                         {
                             actual_kit_number = directory_kit_number.Split(' ')[1];
-                            Add_Kit(kit_name: applicator_name, kit_number: actual_kit_number, file_path: applicator_directory);
+                            //Add_Kit(kit_name: applicator_name, kit_number: actual_kit_number, file_path: applicator_directory);
                         }
                     }
                 }
