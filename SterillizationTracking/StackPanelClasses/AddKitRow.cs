@@ -103,7 +103,7 @@ namespace SterillizationTracking.StackPanelClasses
             Children.Add(remove_use_button);
 
             reorder_button = new Button();
-            reorder_button.Width = 100;
+            reorder_button.Width = 80;
             Binding reorderBinding = new Binding("CanReorderKit");
             reorderBinding.Source = new_kit;
             reorder_button.Click += new_kit.reorder;
@@ -118,12 +118,13 @@ namespace SterillizationTracking.StackPanelClasses
 
             status_label = new Label();
             status_label.Content = "Status";
+            status_label.VerticalContentAlignment = VerticalAlignment.Center;
             status_label.SetBinding(Label.BackgroundProperty, colorBinding);
             status_label.Padding = new Thickness(10);
             Children.Add(status_label);
 
             reset_button = new Button();
-            reset_button.Width = 100;
+            reset_button.Width = 80;
             reset_button.IsEnabled = false;
             reset_button.Click += new_kit.reset;
             reset_button.Content = "Reset?";
