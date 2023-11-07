@@ -133,6 +133,7 @@ namespace SterillizationTracking
             else
             {
                 library = new TemplateKitLibrary();
+                library.Kits = new ObservableCollection<TemplateKit>();
             }
             bind();
         }
@@ -171,16 +172,19 @@ namespace SterillizationTracking
             string actual_kit_number;
             string directory_kit_number;
             string full_applicator_path = Path.Combine(path, directory_kit_name);
-            kit_list = Directory.GetDirectories(full_applicator_path);
-            if (kit_list.Length > 0)
+            if (Directory.Exists(full_applicator_path))
             {
-                foreach (string directory_kit_number_path in kit_list)
+                kit_list = Directory.GetDirectories(full_applicator_path);
+                if (kit_list.Length > 0)
                 {
-                    directory_kit_number = directory_kit_number_path.Split(full_applicator_path)[1];
-                    if (directory_kit_number.Contains("Kit"))
+                    foreach (string directory_kit_number_path in kit_list)
                     {
-                        actual_kit_number = directory_kit_number.Split(' ')[1];
-                        Add_Existing_Kit(directory_kit_name, actual_kit_number, path);
+                        directory_kit_number = directory_kit_number_path.Split(full_applicator_path)[1];
+                        if (directory_kit_number.Contains("Kit"))
+                        {
+                            actual_kit_number = directory_kit_number.Split(' ')[1];
+                            Add_Existing_Kit(directory_kit_name, actual_kit_number, path);
+                        }
                     }
                 }
             }
@@ -229,6 +233,7 @@ namespace SterillizationTracking
         {
             TemplateWindowClass template_window = new TemplateWindowClass(base_directory);
             template_window.ShowDialog();
+            rebuild_library();
             bind();
         }
     }
