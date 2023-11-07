@@ -135,7 +135,6 @@ namespace SterillizationTracking.Kit_Classes
             KitDirectoryPath = Path.Combine(file_path, name, $"Kit {kitnumber}");
             UseFileLocation = Path.Combine(KitDirectoryPath, "Uses.txt");
             UsageDates = new List<string>();
-            build_read_use_file();
         }
         public BaseKit(string name)
         {
@@ -182,7 +181,16 @@ namespace SterillizationTracking.Kit_Classes
                 }
             }
         }
-        public void build_read_use_file()
+        public void write_file()
+        {
+            List<string> lines = create_file_lines();
+            if (!Directory.Exists(KitDirectoryPath))
+            {
+                Directory.CreateDirectory(KitDirectoryPath);
+            }
+            File.WriteAllLines(UseFileLocation, lines);
+        }
+        public void build_from_file()
         {
             if (File.Exists(UseFileLocation))
             {
@@ -210,12 +218,7 @@ namespace SterillizationTracking.Kit_Classes
             }
             else
             {
-                List<string> lines = create_file_lines();
-                if (!Directory.Exists(KitDirectoryPath))
-                {
-                    Directory.CreateDirectory(KitDirectoryPath);
-                }
-                File.WriteAllLines(UseFileLocation, lines);
+                write_file();
             }
             check_status();
         }
@@ -242,7 +245,7 @@ namespace SterillizationTracking.Kit_Classes
             string file_path = Path.Combine(ReorderDirectoryPath, Present.Replace(":", ".") + ".txt");
             File.WriteAllLines(file_path, UsageDates);
         }
-            public void update_file()
+        public void update_file()
         {
             List<string> info = create_file_lines();
             info.AddRange(UsageDates);

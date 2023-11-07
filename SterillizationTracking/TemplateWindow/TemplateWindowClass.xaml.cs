@@ -17,60 +17,163 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
+
 namespace SterillizationTracking.TemplateWindow
 {
     /// <summary>
     /// Interaction logic for TemplateWindowClass.xaml
     /// </summary>
     /// 
-    public class PartClass : StackPanel
+    public class TopRow : StackPanel
     {
-        Brush red = new SolidColorBrush(Color.FromRgb(255, 0, 0));
-        public Label TotalUse, WarningUse, Description;
-        public TextBox TotalUseText, WarningUseText, DescriptionText;
-        public List<PartClass> Parts;
-        public PartClass(List<PartClass> parts)
+        public TopRow()
         {
             Orientation = Orientation.Horizontal;
-            Description = new Label();
-            Description.Content = "Description";
-            Description.Width = 75;
-            Children.Add(Description);
+            Label desc = new Label();
+            desc.Width = 150;
+            desc.Content = "Template Name";
+
+            Label add_part = new Label();
+            add_part.Content = "Add Part?";
+            add_part.Width = 75;
+
+            Label desc_part = new Label();
+            desc_part.Width = 150;
+            desc_part.Content = "Part Description";
+
+            Label uses = new Label();
+            uses.Width = 50;
+            uses.Content = "Uses?";
+
+            Label warning = new Label();
+            warning.Width = 70;
+            warning.Content = "Warning?";
+
+            Label delete_part = new Label();
+            delete_part.Width = 75;
+            delete_part.Content = "X Part?";
+
+            Label delete_template = new Label();
+            delete_template.Width = 100;
+            delete_template.Content = "Delete Template?";
+
+            Children.Add(desc);
+            Children.Add(add_part);
+            Children.Add(desc_part);
+            Children.Add(uses);
+            Children.Add(warning);
+            Children.Add(delete_part);
+            Children.Add(delete_template);
+        }
+    }
+    public class TemplateClassStackPanel : StackPanel
+    {
+        Brush red = new SolidColorBrush(Color.FromRgb(255, 0, 0));
+        public TextBox TotalUseText, WarningUseText, DescriptionText, text_box;
+        public ObservableCollection<TemplateKit> Templates;
+        public TemplateKit template;
+
+        public TemplateClassStackPanel(ObservableCollection<TemplateKit> templates, TemplateKit template)
+        {
+            Orientation = Orientation.Horizontal;
+            this.template = template;
+            Templates = templates;
+            build();
+        }
+
+        private void build()
+        {
+            Children.Clear();
 
             DescriptionText = new TextBox();
             DescriptionText.Width = 150;
+            DescriptionText.Text = "Template Name";
+            DescriptionText.TextAlignment = TextAlignment.Center;
+            DescriptionText.VerticalContentAlignment = VerticalAlignment.Center;
+            Binding name_binding = new Binding(path: "Name");
+            name_binding.Mode = BindingMode.TwoWay;
+            name_binding.Source = template;
+            DescriptionText.SetBinding(TextBox.TextProperty, name_binding);
             Children.Add(DescriptionText);
 
-            TotalUse = new Label();
-            TotalUse.Content = "Total Uses";
-            TotalUse.Width = 65;
-            Children.Add(TotalUse);
+            Button add_button = new Button();
+            add_button.Content = "Add Part?";
+            add_button.Width = 75;
+            add_button.Click += Add_button_Click;
+            Children.Add(add_button);
 
-            TotalUseText = new TextBox();
-            TotalUseText.Width = 30;
-            Children.Add(TotalUseText);
 
-            WarningUse = new Label();
-            WarningUse.Content = "Warning Uses";
-            WarningUse.Width = 85;
-            Children.Add(WarningUse);
+            StackPanel stackPanel_all = new StackPanel();
+            stackPanel_all.Orientation = Orientation.Vertical;
+            foreach (TemplatePart part in template.Parts)
+            {
+                StackPanel stackPanel = new StackPanel();
+                stackPanel.Orientation = Orientation.Horizontal;
+                text_box = new TextBox();
+                text_box.Text = "Description";
+                Binding description_binding = new Binding(path: "Description");
+                description_binding.Mode = BindingMode.TwoWay;
+                description_binding.Source = part;
+                text_box.SetBinding(TextBox.TextProperty, description_binding);
+                text_box.Width = 150;
+                text_box.Padding = new Thickness(10);
+                stackPanel.Children.Add(text_box);
 
-            WarningUseText = new TextBox();
-            WarningUseText.Width = 30;
-            Children.Add(WarningUseText);
+                text_box = new TextBox();
+                Binding total_use_binding = new Binding(path: "Total_Uses");
+                total_use_binding.Mode = BindingMode.TwoWay;
+                total_use_binding.Source = part;
+                text_box.SetBinding(TextBox.TextProperty, total_use_binding);
+                text_box.Width = 50;
+                text_box.Padding = new Thickness(10);
+                stackPanel.Children.Add(text_box);
+
+                text_box = new TextBox();
+                Binding warning_use_binding = new Binding(path: "Warning_Uses");
+                warning_use_binding.Mode = BindingMode.TwoWay;
+                warning_use_binding.Source = part;
+                text_box.SetBinding(TextBox.TextProperty, warning_use_binding);
+                text_box.Width = 70;
+                text_box.Padding = new Thickness(10);
+                stackPanel.Children.Add(text_box);
+
+                Button part_delete_button = new Button();
+                part_delete_button.Content = "X Part";
+                part_delete_button.Background = red;
+                part_delete_button.Width = 75;
+                part_delete_button.Tag = part;
+                part_delete_button.Click += Delete_part_button_Click;
+                stackPanel.Children.Add(part_delete_button);
+                stackPanel_all.Children.Add(stackPanel);
+            }
+            Children.Add(stackPanel_all);
 
             Button delete_button = new Button();
-            delete_button.Content = "Delete?";
+            delete_button.Content = "Delete Template?";
             delete_button.Background = red;
-            delete_button.Width = 55;
+            delete_button.Width = 100;
             delete_button.Click += Delete_button_Click;
             Children.Add(delete_button);
-            Parts = parts;
         }
-
+        private void Delete_part_button_Click(object sender, RoutedEventArgs e)
+        {
+            var button = (Button)sender;
+            TemplatePart part = (TemplatePart)button.Tag;
+            template.Parts.Remove(part);
+            build();
+        }
+        private void Add_button_Click(object sender, RoutedEventArgs e)
+        {
+            TemplatePart part = new TemplatePart();
+            part.Total_Uses = 0;
+            part.Warning_Uses = 0;
+            part.Description = "";
+            template.Parts.Add(part);
+            build();
+        }
         private void Delete_button_Click(object sender, RoutedEventArgs e)
         {
-            Parts.Remove(this);
+            Templates.Remove(template);
             Children.Clear();
         }
     }
@@ -97,12 +200,10 @@ namespace SterillizationTracking.TemplateWindow
             }
         }
         private ObservableCollection<TemplateKit> templateKitList;
-        public List<PartClass> stack_panel_parts;
         public TemplateWindowClass(string base_directory)
         {
             InitializeComponent();
             template_path = Path.Join(base_directory, "Templates.json");
-            stack_panel_parts = new List<PartClass>();
             if (File.Exists(template_path))
             {
                 string jsonString = File.ReadAllText(template_path);
@@ -113,46 +214,52 @@ namespace SterillizationTracking.TemplateWindow
             {
                 TemplateKitList = new ObservableCollection<TemplateKit>();
             }
-            TemplateComboBox.ItemsSource = TemplateKitList;
-            TemplateComboBox.DisplayMemberPath = "Name";
-            check_status();
+            update_view();
         }
-
-        private void CheckBox_Checked(object sender, RoutedEventArgs e)
+        private void update_view()
         {
-            DeleteTemplateButton.IsEnabled = true;
-        }
-        private void CheckBox_UnChecked(object sender, RoutedEventArgs e)
-        {
-            DeleteTemplateButton.IsEnabled = false;
-        }
-
-        private void BuildTemplateButton_Click(object sender, RoutedEventArgs e)
-        {
-            List<TemplatePart> parts = new List<TemplatePart>();
-            foreach (PartClass part_class in stack_panel_parts)
+            KitStackPanel.Children.Clear();
+            KitStackPanel.Children.Add(new TopRow());
+            foreach (TemplateKit template in TemplateKitList)
             {
-                int total_uses = Convert.ToInt32(part_class.TotalUseText.Text);
-                int warning_uses = Convert.ToInt32(part_class.WarningUseText.Text);
-                parts.Add(new TemplatePart
-                {
-                    Total_Uses = total_uses,
-                    Warning_Uses = warning_uses,
-                    Description = part_class.DescriptionText.Text
-                });
+                TemplateClassStackPanel panel = new TemplateClassStackPanel(TemplateKitList, template);
+                KitStackPanel.Children.Add(panel);
             }
-            TemplateKit template_kit = new TemplateKit
-            {
-                Name = TemplateNameTextBox.Text,
-                Parts = parts,
-            };
-            TemplateKitList.Add(template_kit);
-            stack_panel_parts.Clear();
-            TemplateNameTextBox.Text = "";
-            write_template();
-            check_status();
         }
-        private void write_template()
+        private void AddTemplate_Click(object sender, RoutedEventArgs e)
+        {
+            TemplateKit kit = new TemplateKit();
+            kit.Name = "";
+            kit.Parts = new List<TemplatePart>();
+            TemplatePart part = new TemplatePart();
+            part.Total_Uses = 0;
+            part.Warning_Uses = 0;
+            part.Description = "";
+            kit.Parts.Add(part);
+            TemplateKitList.Add(kit);
+            update_view();
+        }
+        private void Update(object sender, RoutedEventArgs e)
+        {
+            update_view();
+        }
+
+        private void DeleteTemplateButton_Click(object sender, RoutedEventArgs e)
+        {
+            //TemplateKit selected_kit = (TemplateKit)TemplateComboBox.SelectedItem;
+        }
+
+        private void TemplateNameTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            update_view();
+        }
+
+        private void ExitButton_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
+
+        private void SaveExitButton_Click(object sender, RoutedEventArgs e)
         {
             TemplateKitLibrary library = new TemplateKitLibrary
             {
@@ -160,74 +267,7 @@ namespace SterillizationTracking.TemplateWindow
             };
             string json_string = JsonSerializer.Serialize(library);
             File.WriteAllText(template_path, json_string);
-        }
-        private void update_view()
-        {
-            KitStackPanel.Children.Clear();
-            foreach (PartClass part in stack_panel_parts)
-            {
-                KitStackPanel.Children.Add(part);
-            }
-            if (TemplateKitList.Count > 0)
-            {
-                TemplateComboBox.SelectedIndex = 0;
-            }
-        }
-        private void AddPart_Click(object sender, RoutedEventArgs e)
-        {
-            stack_panel_parts.Add(new PartClass(stack_panel_parts));
-            check_status();
-        }
-
-        private void check_status()
-        {
-            BuildTemplateButton.IsEnabled = false;
-            if (KitStackPanel.Children.Count > 0)
-            {
-                if (TemplateNameTextBox.Text != "")
-                {
-                    BuildTemplateButton.IsEnabled = true;
-                }
-            }
-            update_view();
-        }
-        private void check_parts()
-        {
-            bool is_enabled;
-            foreach (PartClass pc in KitStackPanel.Children)
-            {
-                if (pc.TotalUseText.Text == "")
-                {
-                    is_enabled = false;
-                    break;
-                }
-                else if (pc.DescriptionText.Text == "")
-                {
-                    is_enabled = false;
-                    break;
-                }
-                else if (pc.WarningUseText.Text == "")
-                {
-                    is_enabled = false;
-                    break;
-                }
-            }
-        }
-        private void Update(object sender, RoutedEventArgs e)
-        {
-            check_status();
-        }
-
-        private void DeleteTemplateButton_Click(object sender, RoutedEventArgs e)
-        {
-            TemplateKit selected_kit = (TemplateKit)TemplateComboBox.SelectedItem;
-            TemplateKitList.Remove(selected_kit);
-            write_template();
-        }
-
-        private void TemplateNameTextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            check_status();
+            Close();
         }
     }
 }

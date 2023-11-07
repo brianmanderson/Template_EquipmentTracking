@@ -64,7 +64,7 @@ namespace SterillizationTracking.StackPanelClasses
                 stackPanel.Children.Add(text_box);
 
                 current_use_label = new Label();
-                current_use_label.Width = 150;
+                current_use_label.Width = 125;
                 Binding myBinding = new Binding("CurrentUseString");
                 myBinding.Source = kit;
                 current_use_label.SetBinding(Label.ContentProperty, myBinding);
@@ -76,7 +76,7 @@ namespace SterillizationTracking.StackPanelClasses
                 stackPanel.Children.Add(current_use_label);
 
                 uses_left_label = new Label();
-                uses_left_label.Width = 150;
+                uses_left_label.Width = 125;
                 Binding usesleft_binding = new Binding("UsesLeftString");
                 usesleft_binding.Source = kit;
                 uses_left_label.SetBinding(Label.ContentProperty, usesleft_binding);
