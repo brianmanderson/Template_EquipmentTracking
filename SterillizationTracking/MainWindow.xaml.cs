@@ -2,16 +2,12 @@
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Forms;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using SterillizationTracking.Kit_Classes;
 using SterillizationTracking.StackPanelClasses;
 using SterillizationTracking.Services;
@@ -20,6 +16,7 @@ using System.Runtime.CompilerServices;
 using SterillizationTracking.TemplateWindow;
 using System.Text.Json;
 using System.Collections.ObjectModel;
+using DocumentFormat.OpenXml.ExtendedProperties;
 
 namespace SterillizationTracking
 {
@@ -32,6 +29,7 @@ namespace SterillizationTracking
         private List<string> _kit_numbers = new List<string> { "" };
 
         public string base_directory = @"\\lantis1.unch.unc.edu\research_non_phi\Brachy";
+        public string applicator_path_file = @"Applicator_Path.txt";
         public string applicator_directory;
         public string template_file;
         public string kit_name;
@@ -64,26 +62,30 @@ namespace SterillizationTracking
         public MainWindow()
         {
             InitializeComponent();
+            if (File.Exists(applicator_path_file))
+            {
+                read_file();
+            }
+        }
+        public void read_file()
+        {
+            base_directory = File.ReadLines(applicator_path_file).FirstOrDefault();
             template_file = Path.Combine(base_directory, "Templates.json");
             applicator_directory = base_directory;
-            if (!Directory.Exists(applicator_directory))
-            {
-                Directory.CreateDirectory(applicator_directory);
-            }
             Rebuild_From_Files(applicator_directory);
             rebuild_library();
         }
         public void bind()
         {
-            Binding number_binding = new Binding("Kit_Numbers");
+            System.Windows.Data.Binding number_binding = new System.Windows.Data.Binding("Kit_Numbers");
             number_binding.Source = this;
-            KitNumber_ComboBox.SetBinding(ComboBox.ItemsSourceProperty, number_binding);
+            KitNumber_ComboBox.SetBinding(ItemsControl.ItemsSourceProperty, number_binding);
             KitNumber_ComboBox.SelectedIndex = 0;
 
-            Binding kit_name_binding = new Binding("Kits");
+            System.Windows.Data.Binding kit_name_binding = new System.Windows.Data.Binding("Kits");
             kit_name_binding.Source = library;
             Kit_ComboBox.DisplayMemberPath = "Name";
-            Kit_ComboBox.SetBinding(ComboBox.ItemsSourceProperty, kit_name_binding);
+            Kit_ComboBox.SetBinding(ItemsControl.ItemsSourceProperty, kit_name_binding);
 
             Kitnames = new ObservableCollection<string>
             {
@@ -235,6 +237,21 @@ namespace SterillizationTracking
             template_window.ShowDialog();
             rebuild_library();
             bind();
+        }
+
+        private void Change_Directory_Button_Click(object sender, RoutedEventArgs e)
+        {
+            FolderBrowserDialog dialog = new FolderBrowserDialog();
+            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                string folder = dialog.SelectedPath;
+                List<string> lines = new List<string>
+                {
+                    folder
+                };
+                File.WriteAllLines(applicator_path_file, lines);
+                read_file();
+            }
         }
     }
 }

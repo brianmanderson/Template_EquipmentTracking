@@ -8,7 +8,7 @@
         Title="MainWindow" Height="450" Width="1335">
     <Grid>
         <ScrollViewer VerticalScrollBarVisibility="Visible" Margin="0,73,0,0">
-            <StackPanel Margin="23,27,41,88" x:Name="KitStackPanel">
+            <StackPanel  Margin="23,27,41,88" x:Name="KitStackPanel">
             </StackPanel>
         </ScrollViewer>
 
@@ -21,9 +21,10 @@
         </ComboBox>
         <ComboBox x:Name="FilterNameComboBox" Margin="687,30,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="202" Height="36"
                   SelectionChanged="FilterNameComboBox_SelectionChanged" IsEnabled="True" SelectedIndex="0"/>
-        <TextBlock TextWrapping="WrapWithOverflow" HorizontalAlignment="Left" Margin="905,39,0,0" VerticalAlignment="Top" Height="18" Width="420">
+        <TextBlock TextWrapping="WrapWithOverflow" HorizontalAlignment="Left" Margin="905,47,0,0" VerticalAlignment="Top" Height="18" Width="420">
             For issues, please e-mail Brian Anderson @ brian_anderson@med.unc.edu
         </TextBlock>
         <Button x:Name="CreateTemplate" Content="Create Template" IsEnabled="True" HorizontalAlignment="Left" Height="36" Margin="32,29,0,0" VerticalAlignment="Top" Width="136" Click="CreateTemplate_Button_Click"/>
+        <Button x:Name="ChangeDirectory_Button" Content="Change Directory!" IsEnabled="True" HorizontalAlignment="Left" Height="26" Margin="905,10,0,0" VerticalAlignment="Top" Width="387" Click="Change_Directory_Button_Click"/>
     </Grid>
 </Window>
