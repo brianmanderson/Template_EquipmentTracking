@@ -28,7 +28,20 @@ namespace SterillizationTracking
     {
         private List<string> _kit_numbers = new List<string> { "" };
 
-        public string base_directory = @"\\lantis1.unch.unc.edu\research_non_phi\Brachy";
+        public string Base_Directory
+        {
+            get
+            {
+                return base_directory;
+            }
+            set
+            {
+                base_directory = value;
+                OnPropertyChanged("Base_Directory");
+            }
+        }
+
+        private string base_directory;
         public string applicator_path_file = @"Applicator_Path.txt";
         public string applicator_directory;
         public string template_file;
@@ -66,12 +79,20 @@ namespace SterillizationTracking
             {
                 read_file();
             }
+            else
+            {
+                Change_Directory();
+            }
         }
         public void read_file()
         {
-            base_directory = File.ReadLines(applicator_path_file).FirstOrDefault();
-            template_file = Path.Combine(base_directory, "Templates.json");
-            applicator_directory = base_directory;
+            Base_Directory = File.ReadLines(applicator_path_file).FirstOrDefault();
+            if (!Directory.Exists(Base_Directory))
+            {
+                Change_Directory();
+            }
+            template_file = Path.Combine(Base_Directory, "Templates.json");
+            applicator_directory = Base_Directory;
             Rebuild_From_Files(applicator_directory);
             rebuild_library();
         }
@@ -81,6 +102,10 @@ namespace SterillizationTracking
             number_binding.Source = this;
             KitNumber_ComboBox.SetBinding(ItemsControl.ItemsSourceProperty, number_binding);
             KitNumber_ComboBox.SelectedIndex = 0;
+
+            System.Windows.Data.Binding base_directory_binding = new System.Windows.Data.Binding("Base_Directory");
+            base_directory_binding.Source = this;
+            Directory_Label.SetBinding(ContentProperty, base_directory_binding);
 
             System.Windows.Data.Binding kit_name_binding = new System.Windows.Data.Binding("Kits");
             kit_name_binding.Source = library;
@@ -182,7 +207,7 @@ namespace SterillizationTracking
                     foreach (string directory_kit_number_path in kit_list)
                     {
                         directory_kit_number = directory_kit_number_path.Split(full_applicator_path)[1];
-                        if (directory_kit_number.Contains("Kit"))
+                        if (directory_kit_number.Contains("Kit "))
                         {
                             actual_kit_number = directory_kit_number.Split(' ')[1];
                             Add_Existing_Kit(directory_kit_name, actual_kit_number, path);
@@ -241,7 +266,13 @@ namespace SterillizationTracking
 
         private void Change_Directory_Button_Click(object sender, RoutedEventArgs e)
         {
+            Change_Directory();
+        }
+        private void Change_Directory()
+        {
             FolderBrowserDialog dialog = new FolderBrowserDialog();
+            dialog.Description = "Select a folder for equipment";
+            dialog.UseDescriptionForTitle = true;
             if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 string folder = dialog.SelectedPath;

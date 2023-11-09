@@ -7,24 +7,25 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="1335">
     <Grid>
-        <ScrollViewer VerticalScrollBarVisibility="Visible" Margin="0,73,0,0">
+        <ScrollViewer VerticalScrollBarVisibility="Visible" Margin="0,96,0,0">
             <StackPanel  Margin="23,27,41,88" x:Name="KitStackPanel">
             </StackPanel>
         </ScrollViewer>
 
-        <Button x:Name="Add_Kit_Button" Content="Add Kit" IsEnabled="False" HorizontalAlignment="Left" Height="36" Margin="532,30,0,0" VerticalAlignment="Top" Width="136" Click="Add_Kit_Button_Click"/>
-        <ComboBox x:Name="Kit_ComboBox" HorizontalAlignment="Left" Margin="195,30,0,0" VerticalAlignment="Top" Width="156" Height="36"
+        <Button x:Name="Add_Kit_Button" Content="Add Kit" IsEnabled="False" HorizontalAlignment="Left" Height="36" Margin="532,46,0,0" VerticalAlignment="Top" Width="136" Click="Add_Kit_Button_Click"/>
+        <ComboBox x:Name="Kit_ComboBox" HorizontalAlignment="Left" Margin="195,46,0,0" VerticalAlignment="Top" Width="156" Height="36"
                   SelectionChanged="Kit_ComboBox_SelectionChanged" SelectedIndex="0">
         </ComboBox>
-        <ComboBox x:Name="KitNumber_ComboBox" HorizontalAlignment="Left" Margin="379,30,0,0" VerticalAlignment="Top" Width="141" Height="36"
+        <ComboBox x:Name="KitNumber_ComboBox" HorizontalAlignment="Left" Margin="379,46,0,0" VerticalAlignment="Top" Width="141" Height="36"
                   SelectionChanged="KitNumber_ComboBox_SelectionChanged" IsEnabled="False">
         </ComboBox>
-        <ComboBox x:Name="FilterNameComboBox" Margin="687,30,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="202" Height="36"
+        <ComboBox x:Name="FilterNameComboBox" Margin="687,46,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="202" Height="36"
                   SelectionChanged="FilterNameComboBox_SelectionChanged" IsEnabled="True" SelectedIndex="0"/>
-        <TextBlock TextWrapping="WrapWithOverflow" HorizontalAlignment="Left" Margin="905,47,0,0" VerticalAlignment="Top" Height="18" Width="420">
+        <TextBlock TextWrapping="WrapWithOverflow" HorizontalAlignment="Left" Margin="905,57,0,0" VerticalAlignment="Top" Height="18" Width="420">
             For issues, please e-mail Brian Anderson @ brian_anderson@med.unc.edu
         </TextBlock>
-        <Button x:Name="CreateTemplate" Content="Create Template" IsEnabled="True" HorizontalAlignment="Left" Height="36" Margin="32,29,0,0" VerticalAlignment="Top" Width="136" Click="CreateTemplate_Button_Click"/>
-        <Button x:Name="ChangeDirectory_Button" Content="Change Directory!" IsEnabled="True" HorizontalAlignment="Left" Height="26" Margin="905,10,0,0" VerticalAlignment="Top" Width="387" Click="Change_Directory_Button_Click"/>
+        <Button x:Name="CreateTemplate" Content="Create Template" IsEnabled="True" HorizontalAlignment="Left" Height="36" Margin="32,47,0,0" VerticalAlignment="Top" Width="136" Click="CreateTemplate_Button_Click"/>
+        <Button x:Name="ChangeDirectory_Button" Content="Change Directory!" IsEnabled="True" HorizontalAlignment="Left" Height="34" Margin="906,6,0,0" VerticalAlignment="Top" Width="387" Click="Change_Directory_Button_Click"/>
+        <Label Name="Directory_Label" Content="" HorizontalAlignment="Left" Margin="34,10,0,0" VerticalAlignment="Top" Width="855"/>
     </Grid>
 </Window>
