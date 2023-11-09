@@ -24,7 +24,7 @@
         <TextBlock TextWrapping="WrapWithOverflow" HorizontalAlignment="Left" Margin="905,57,0,0" VerticalAlignment="Top" Height="18" Width="420">
             For issues, please e-mail Brian Anderson @ brian_anderson@med.unc.edu
         </TextBlock>
-        <Button x:Name="CreateTemplate" Content="Create Template" IsEnabled="True" HorizontalAlignment="Left" Height="36" Margin="32,47,0,0" VerticalAlignment="Top" Width="136" Click="CreateTemplate_Button_Click"/>
+        <Button x:Name="CreateTemplate" Content="Edit Templates" IsEnabled="True" HorizontalAlignment="Left" Height="36" Margin="32,47,0,0" VerticalAlignment="Top" Width="136" Click="CreateTemplate_Button_Click"/>
         <Button x:Name="ChangeDirectory_Button" Content="Change Directory!" IsEnabled="True" HorizontalAlignment="Left" Height="34" Margin="906,6,0,0" VerticalAlignment="Top" Width="387" Click="Change_Directory_Button_Click"/>
         <Label Name="Directory_Label" Content="" HorizontalAlignment="Left" Margin="34,10,0,0" VerticalAlignment="Top" Width="855"/>
     </Grid>

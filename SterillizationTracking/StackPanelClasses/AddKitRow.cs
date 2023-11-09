@@ -134,7 +134,8 @@ namespace SterillizationTracking.StackPanelClasses
             remove_button = new Button();
             remove_button.Width = 80;
             remove_button.IsEnabled = false;
-            remove_button.Click += new_kit.reset;
+            remove_button.Click += new_kit.remove_click;
+            remove_button.Click += remove_click;
             remove_button.Content = "Remove?";
             remove_button.Padding = new Thickness(10);
             Children.Add(remove_button);
@@ -158,6 +159,10 @@ namespace SterillizationTracking.StackPanelClasses
             last_updated.Padding = new Thickness(10);
             Children.Add(last_updated);
 
+        }
+        public void remove_click(object sender, RoutedEventArgs e)
+        {
+            Children.Clear();
         }
         public void disable_add_use_button(object sender, RoutedEventArgs e)
         {
