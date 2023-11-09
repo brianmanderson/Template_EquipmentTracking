@@ -28,6 +28,17 @@ namespace SterillizationTracking
     {
         private List<string> _kit_numbers = new List<string> { "" };
 
+        private System.Windows.Media.Brush statusColor;
+
+        public System.Windows.Media.Brush StatusColor
+        {
+            get { return statusColor; }
+            set
+            {
+                statusColor = value;
+                OnPropertyChanged("StatusColor");
+            }
+        }
         public string Base_Directory
         {
             get
@@ -103,6 +114,10 @@ namespace SterillizationTracking
             KitNumber_ComboBox.SetBinding(ItemsControl.ItemsSourceProperty, number_binding);
             KitNumber_ComboBox.SelectedIndex = 0;
 
+            System.Windows.Data.Binding colorBinding = new System.Windows.Data.Binding("StatusColor");
+            colorBinding.Source = this;
+            Create_Edit_Template_Button.SetBinding(ItemsControl.BackgroundProperty, colorBinding);
+
             System.Windows.Data.Binding base_directory_binding = new System.Windows.Data.Binding("Base_Directory");
             base_directory_binding.Source = this;
             Directory_Label.SetBinding(ContentProperty, base_directory_binding);
@@ -161,6 +176,14 @@ namespace SterillizationTracking
             {
                 library = new TemplateKitLibrary();
                 library.Kits = new ObservableCollection<TemplateKit>();
+            }
+            if (library.Kits.Count == 0)
+            {
+                StatusColor = System.Windows.Media.Brushes.LightGreen;
+            }
+            else
+            {
+                StatusColor = System.Windows.Media.Brushes.LightGray;
             }
             bind();
         }
