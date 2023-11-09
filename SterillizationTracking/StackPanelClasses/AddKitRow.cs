@@ -18,7 +18,7 @@ namespace SterillizationTracking.StackPanelClasses
 {
     class AddKitRow : StackPanel
     {
-        public Button add_use_button, remove_use_button, reorder_button, reset_button;
+        public Button add_use_button, remove_use_button, reorder_button, reset_button, remove_button;
         public List<TextBox> text_boxes;
         public Label current_use_label, kit_label, kit_number_label, override_label, status_label, uses_left_label, last_updated, description_label;
         public CheckBox override_checkbox;
@@ -131,6 +131,14 @@ namespace SterillizationTracking.StackPanelClasses
             reset_button.Padding = new Thickness(10);
             Children.Add(reset_button);
 
+            remove_button = new Button();
+            remove_button.Width = 80;
+            remove_button.IsEnabled = false;
+            remove_button.Click += new_kit.reset;
+            remove_button.Content = "Remove?";
+            remove_button.Padding = new Thickness(10);
+            Children.Add(remove_button);
+
             override_label = new Label();
             override_label.Content = "Override?";
             override_label.Padding = new Thickness(10);
@@ -177,6 +185,7 @@ namespace SterillizationTracking.StackPanelClasses
                 remove_use_button.IsEnabled = true;
                 reorder_button.IsEnabled = true;
                 reset_button.IsEnabled = true;
+                remove_button.IsEnabled = true;
                 foreach (TextBox tb in text_boxes)
                 {
                     tb.IsReadOnly = false;
@@ -188,6 +197,7 @@ namespace SterillizationTracking.StackPanelClasses
             remove_use_button.IsEnabled = false;
             reorder_button.IsEnabled = false;
             reset_button.IsEnabled = false;
+            remove_button.IsEnabled = false;
             foreach (TextBox tb in text_boxes)
             {
                 tb.IsReadOnly = true;
