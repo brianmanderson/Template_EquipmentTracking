@@ -158,6 +158,20 @@ namespace SterillizationTracking.Kit_Classes
             UsageDates = new List<string>();
             foreach (BaseOnePartKit kit in Kits) { kit.reset(); }
         }
+        public void remove_click(object sender, RoutedEventArgs e)
+        {
+            remove();
+        }
+        private void remove()
+        {
+            EnumerationOptions options = new EnumerationOptions();
+            options.RecurseSubdirectories = true;
+            foreach (string file in Directory.EnumerateFiles(KitDirectoryPath, "", options))
+            {
+                File.Delete(file);
+            }
+            Directory.Delete(KitDirectoryPath, true);
+        }
         public void check_status()
         {
             CanReorderKit = false;
