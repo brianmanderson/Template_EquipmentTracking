@@ -28,7 +28,7 @@ namespace SterillizationTracking
     {
         private List<string> _kit_numbers = new List<string> { "" };
 
-        public string base_directory = @"\\lantis1.unch.unc.edu\research_non_phi\Brachy";
+        public string base_directory = @"\\vscifs1\physicsqadata\BMA\Brachy";
         public string applicator_path_file = @"Applicator_Path.txt";
         public string applicator_directory;
         public string template_file;

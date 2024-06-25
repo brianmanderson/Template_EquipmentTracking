@@ -160,7 +160,7 @@ namespace SterillizationTracking.Kit_Classes
                 CanAdd = false;
                 StatusInt = 3;
             }
-            else if (CurrentUse >= Warning_Uses * 0.75)
+            else if (CurrentUse >= Warning_Uses)
             {
                 StatusColor = System.Windows.Media.Brushes.Yellow;
                 CanReorder = false;
