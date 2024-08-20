@@ -5,10 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SterillizationTracking"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="1200">
+        Title="MainWindow" Height="450" Width="1300">
     <Grid>
         <ScrollViewer VerticalScrollBarVisibility="Visible" Margin="0,96,0,0">
-            <StackPanel  Margin="23,27,41,88" x:Name="KitStackPanel">
+            <StackPanel  x:Name="KitStackPanel">
             </StackPanel>
         </ScrollViewer>
 

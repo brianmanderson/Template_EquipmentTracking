@@ -29,7 +29,7 @@ namespace SterillizationTracking.StackPanelClasses
             Orientation = Orientation.Horizontal;
 
             kit_label = new Label();
-            kit_label.Width = 150;
+            kit_label.Width = 200;
             Binding label_binding = new Binding("Name");
             label_binding.Source = new_kit;
             kit_label.SetBinding(Label.ContentProperty, label_binding);
