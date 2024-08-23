@@ -291,7 +291,10 @@ namespace SterillizationTracking.Kit_Classes
             {
                 kit.remove_use();
             }
-            UsageDates.RemoveAt(UsageDates.Count - 1);
+            if (UsageDates.Count > 0)
+            {
+                UsageDates.RemoveAt(UsageDates.Count - 1);
+            }
             update_file();
             check_status();
         }
