@@ -90,14 +90,14 @@ namespace SterillizationTracking.StackPanelClasses
             add_use_button.Click += new_kit.add_use;
             add_use_button.Click += disable_add_use_button;
             add_use_button.SetBinding(Button.IsEnabledProperty, canAddBinding);
-            add_use_button.Content = "Add use";
+            add_use_button.Content = "Used?";
             add_use_button.Padding = new Thickness(10);
             Children.Add(add_use_button);
 
             remove_use_button = new Button();
             remove_use_button.Click += new_kit.remove_use;
             remove_use_button.Click += disable_remove_use_button;
-            remove_use_button.Content = "Remove use";
+            remove_use_button.Content = "Add 1";
             remove_use_button.Padding = new Thickness(10);
             remove_use_button.IsEnabled = false;
             Children.Add(remove_use_button);
